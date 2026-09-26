@@ -1,0 +1,16 @@
+{
+  "login": {
+    "username": "Admin",
+    "password": "admi123"
+  },
+  "validEmployee": "Peter Mac Anderson",
+  "invalidEmployee": "Jemyka",
+  "suggestionName": "Peter",
+  "invalidSuggestName": "Jem",
+  "validJobTitle": "QA Engineer",
+  "jobPeter": "Administration",
+  "validLocation": "Texas R&D",
+  "locationPeter": "New York Sales Office",
+  "invalidLocation": "Indonesia",
+  "emptyValue": ""
+}
