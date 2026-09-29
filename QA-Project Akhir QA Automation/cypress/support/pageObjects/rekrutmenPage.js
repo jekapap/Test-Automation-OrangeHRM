@@ -3,7 +3,7 @@ import rekrutmenData from "../../fixtures/rekrutmenData.json";
 class rekrutmenPage {
   //Action
   elements = {
-    kandidatName: () => cy.get('input[placeholder="Type for hints..."]'),
+    kandidatName: (nama) => cy.get('input[placeholder="Type for hints..."]'),
     getKandidat: (nama) =>
       cy.get(".oxd-autocomplete-dropdown", { timeout: 10000 }).contains(nama),
     getJobTitle: (jobtitle) => cy.get('[role="listbox"]').contains(jobtitle),
@@ -18,21 +18,6 @@ class rekrutmenPage {
       cy.get('input[placeholder="Username"]').type("Admin");
       cy.get('input[placeholder="Password"]').type("admin123");
       cy.get('button[type="submit"]').click();
-    });
-  }
-  loginVisitRekrutmen() {
-    cy.session("login", () => {
-      cy.visit(
-        "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
-      );
-      cy.get('input[placeholder="Username"]').type("Admin");
-      cy.get('input[placeholder="Password"]').type("admin123");
-      cy.get('button[type="submit"]').click();
-    });
-    cy.session("visitRecuitment", () => {
-      cy.visit(
-        "https://opensource-demo.orangehrmlive.com/web/index.php/recruitment/viewCandidates",
-      );
     });
   }
 
@@ -65,12 +50,6 @@ class rekrutmenPage {
   inputKandidat(nama) {
     this.elements.kandidatName().clear().type(nama);
   }
-  // searchByNama(nama) {
-  // this.inputKandidat(nama);
-  // cy.get(".oxd-autocomplete-dropdown").should("be.visible");
-  // this.selectKandidat(nama);
-  // this.klikSearch();
-  // }
   selectKandidat(nama) {
     cy.get(".oxd-autocomplete-dropdown", { timeout: 10000 }).should(
       "be.visible",
@@ -89,7 +68,6 @@ class rekrutmenPage {
   klikSave() {
     cy.get("button[type='submit']").click();
   }
-
   klikCancel() {
     cy.xpath("//button[normalize-space()='Cancel']").click();
   }
@@ -116,7 +94,6 @@ class rekrutmenPage {
     },
     NoRecordsFound() {
       cy.contains("No Records Found", { timeout: 10000 }).should("exist");
-      // cy.contains("No Records Found").should("be.visible");
     },
     Invalid() {
       cy.get(
@@ -175,20 +152,20 @@ class rekrutmenPage {
     vacancy() {
       cy.intercept(
         "GET",
-        "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/recruitment/vacancies?model=summary&limit=0&excludeInterviewers=false",
+        "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/recruitment/vacancies?limit=50&offset=0&sortField=vacancy.name&sortOrder=ASC&model=detailed",
       ).as("vacancy");
     },
     waitVacancy() {
       cy.wait("@vacancy").its("response.statusCode").should("eq", 200);
     },
-    hiringManager() {
+    TabAddKandidat() {
       cy.intercept(
         "GET",
-        "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/recruitment/hiring-managers?limit=0",
-      ).as("hiringManager");
+        "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/recruitment/vacancies?model=summary&limit=0&status=true&excludeInterviewers=true",
+      ).as("TabAddKandidat");
     },
-    waitHiringManager() {
-      cy.wait("@hiringManager").its("response.statusCode").should("eq", 200);
+    waitTabAddKandidat() {
+      cy.wait("@TabAddKandidat").its("response.statusCode").should("eq", 200);
     },
     namaKandidat() {
       cy.intercept(
